@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
-namespace ChocolateFactoryManagement.Data
+using ChocolateFactory.Models;
+namespace ChocolateFactory.Data
 {
     public class ApplicationDbContext : DbContext
     {

@@ -1,21 +1,59 @@
-using ChocolateFactoryManagement.Data;
-using ChocolateFactoryManagement.Helpers;
-using ChocolateFactoryManagement.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ChocolateFactory.Data;
+using ChocolateFactory.Helpers;
+using Scrutor;
+using ChocolateFactory.Services;
+using ChocolateFactory.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configure logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+// Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Add Swagger configuration for JWT
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your token. Example: \"Bearer abc123\""
+    });
 
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+// Configure ApplicationDbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAuthentication("Bearer")
+// Configure Authentication (JWT)
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -31,13 +69,44 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-// Add custom services (e.g., JWT Helper, Notification Service)
+// Register all services in the ChocolateFactory.Services namespace
+builder.Services.AddScoped<QualityCheckRepository>();
+builder.Services.AddScoped<QualityControlService>();
+
+// Register helper classes
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<JwtHelper>();
-builder.Services.AddScoped<NotificationService>();
+
+// Register NotificationService manually due to custom initialization logic
+builder.Services.AddScoped<NotificationService>(provider =>
+{
+    var smtpServer = builder.Configuration["NotificationSettings:SmtpServer"];
+    var smtpPort = int.Parse(builder.Configuration["NotificationSettings:SmtpPort"]);
+    var emailFrom = builder.Configuration["NotificationSettings:EmailFrom"];
+    var emailPassword = builder.Configuration["NotificationSettings:EmailPassword"];
+
+    return new NotificationService(smtpServer, smtpPort, emailFrom, emailPassword);
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure middleware for error handling
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        var errorResponse = new { message = ex.Message, details = ex.StackTrace };
+        await context.Response.WriteAsJsonAsync(errorResponse);
+    }
+});
+
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

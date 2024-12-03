@@ -1,16 +1,13 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 
-using System.ComponentModel.DataAnnotations;
-
-
-namespace ChocolateFactory.Models
+namespace ChocolateFactory.Requests
 {
-    public class Warehouse
+    public class WarehouseRequest
     {
+        public required string Location { get; set; }
 
         [Required]
-        [StringLength(200, ErrorMessage = "Location cannot exceed 200 characters.")]
-        public required string Location { get; set; }
-        
         [Key]
         public required string Name { get; set; }
 
@@ -22,6 +19,6 @@ namespace ChocolateFactory.Models
         public required Guid ManagerId { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Current stock level cannot be negative.")]
-        public int CurrentStockLevel { get; set; }
+        public int CurrentStockLevel { get; set; } = 0;
     }
 }
