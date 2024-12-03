@@ -18,5 +18,14 @@ namespace ChocolateFactoryManagement.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Report> Reports { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<RawMaterial>()
+                .Property(r => r.CostPerUnit)
+                .HasColumnType("decimal(18,4)");
+        }
     }
 }

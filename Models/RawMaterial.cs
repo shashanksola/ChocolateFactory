@@ -1,5 +1,6 @@
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class RawMaterial
 {
@@ -23,6 +24,6 @@ public class RawMaterial
     public required Guid SupplierId { get; set; }
 
     [Required]
-    [Range(0.01, double.MaxValue, ErrorMessage = "Cost per unit must be greater than 0.")]
+    [Column(TypeName = "decimal(18,4)")]
     public required decimal CostPerUnit { get; set; }
 }

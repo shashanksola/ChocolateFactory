@@ -15,7 +15,7 @@ namespace ChocolateFactoryManagement.Services
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
             var client = new SendGridClient(_configuration["SendGrid:ApiKey"]);
-            var from = new EmailAddress(_configuration["SendGrid:FromEmail"], "Chocolate Factory");
+            var from = new EmailAddress(_configuration["SendGrid:FromEmail"], _configuration["SendGrid:FromName"]);
             var to = new EmailAddress(toEmail);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, body, body);
             await client.SendEmailAsync(msg);
