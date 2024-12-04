@@ -6,11 +6,14 @@ namespace ChocolateFactory.Repositories
 {
     public interface IRawMaterialRepository
     {
-        Task<RawMaterial> GetRawMaterialByIdAsync(int materialId);
+        Task<RawMaterial> GetRawMaterialByNameAsync(string materialName);
+        Task<RawMaterial> GetRawMaterialByBatchIdAsync(Guid materialBatchId);
         Task<IEnumerable<RawMaterial>> GetAllRawMaterialsAsync();
+        Task<IEnumerable<RawMaterial>> GetAllRawMaterialsByWarehouseNameAsync(string warehouseName);
         Task AddRawMaterialAsync(RawMaterial material);
         Task UpdateRawMaterialAsync(RawMaterial material);
-        Task DeleteRawMaterialAsync(int materialId);
+        Task DeleteRawMaterialAsync(string name);
+        Task DeleteRawMaterialByBatchAsync(Guid materialId);
     }
 
     public class RawMaterialRepository : IRawMaterialRepository
@@ -22,11 +25,16 @@ namespace ChocolateFactory.Repositories
             _context = context;
         }
 
-        public async Task<RawMaterial> GetRawMaterialByIdAsync(int materialId) =>
-            await _context.RawMaterials.FindAsync(materialId);
+        public async Task<RawMaterial> GetRawMaterialByNameAsync(string materialName) =>
+            await _context.RawMaterials.FindAsync(materialName);
+
+        public async Task<RawMaterial> GetRawMaterialByBatchIdAsync(Guid id) => await _context.RawMaterials.FindAsync(id);
 
         public async Task<IEnumerable<RawMaterial>> GetAllRawMaterialsAsync() =>
             await _context.RawMaterials.ToListAsync();
+
+        public async Task<IEnumerable<RawMaterial>> GetAllRawMaterialsByWarehouseNameAsync(string warehouseName) =>
+            await _context.RawMaterials.Where(x=>x.WarehouseName == warehouseName).ToListAsync();
 
         public async Task AddRawMaterialAsync(RawMaterial material)
         {
@@ -40,9 +48,18 @@ namespace ChocolateFactory.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteRawMaterialAsync(int materialId)
+        public async Task DeleteRawMaterialAsync(string name)
         {
-            var material = await GetRawMaterialByIdAsync(materialId);
+            var maerial = await GetRawMaterialByNameAsync(name);
+            if (maerial != null) {
+                _context.RawMaterials.Remove(maerial);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteRawMaterialByBatchAsync(Guid materialBatchId)
+        {
+            var material = await GetRawMaterialByBatchIdAsync(materialBatchId);
             if (material != null)
             {
                 _context.RawMaterials.Remove(material);

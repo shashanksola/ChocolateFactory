@@ -1,4 +1,5 @@
 
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,11 +8,15 @@ namespace ChocolateFactory.Models
 {
     public class RawMaterial
     {
-        [Key]
-        public Guid MaterialId { get; set; }
+
+        public Guid RawMaterialBatchId { get; set; } = Guid.NewGuid();
+
+        [Required]
+        public required string WarehouseName { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
+        [Key]
         public required string Name { get; set; }
 
         [Required]
@@ -24,7 +29,7 @@ namespace ChocolateFactory.Models
         public DateTime? ExpiryDate { get; set; }
 
         [Required]
-        public required Guid SupplierId { get; set; }
+        public required string SupplierName { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(18,4)")]
