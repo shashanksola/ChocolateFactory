@@ -32,7 +32,7 @@ namespace ChocolateFactory.Migrations
                 columns: table => new
                 {
                     RecordId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EquipmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EquipmentName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaintenanceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Technician = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Details = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
@@ -95,17 +95,18 @@ namespace ChocolateFactory.Migrations
                 name: "RawMaterials",
                 columns: table => new
                 {
-                    MaterialId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    RawMaterialBatchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WarehouseName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StockQuantity = table.Column<int>(type: "int", nullable: false),
                     Unit = table.Column<int>(type: "int", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    SupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SupplierName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CostPerUnit = table.Column<decimal>(type: "decimal(18,4)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RawMaterials", x => x.MaterialId);
+                    table.PrimaryKey("PK_RawMaterials", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,6 +178,8 @@ namespace ChocolateFactory.Migrations
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -191,7 +194,7 @@ namespace ChocolateFactory.Migrations
                 name: "Warehouses",
                 columns: table => new
                 {
-                    WarehouseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
                     ManagerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -199,7 +202,7 @@ namespace ChocolateFactory.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Warehouses", x => x.WarehouseId);
+                    table.PrimaryKey("PK_Warehouses", x => x.Name);
                 });
         }
 

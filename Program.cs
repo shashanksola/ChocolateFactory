@@ -70,6 +70,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // Register all services in the ChocolateFactory.Services namespace
+builder.Services.AddScoped<MaintenanceRecordRepository>();
+builder.Services.AddScoped<MaintenanceService>();
+builder.Services.AddScoped<FinishedGoodsRepository>();
+builder.Services.AddScoped<PackagingService>();
+builder.Services.AddScoped<ProductionScheduleRepository>();
+builder.Services.AddScoped<ProductionService>();
+builder.Services.AddScoped<RawMaterialRepository>();
+builder.Services.AddScoped<RawMaterialService>();
+builder.Services.AddScoped<RecipeRepository>();
+builder.Services.AddScoped<RecipeService>();
+builder.Services.AddScoped<ReportRepository>();
+builder.Services.AddScoped<ReportService>();
+builder.Services.AddScoped<SalesOrderRepository>();
+builder.Services.AddScoped<SalesService>();
+builder.Services.AddScoped<WarehouseRepository>();
+builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<QualityCheckRepository>();
 builder.Services.AddScoped<QualityControlService>();
 
