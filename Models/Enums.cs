@@ -4,7 +4,8 @@ public enum UserRole
     FactoryManager,
     QualityController,
     ProductionSupervisor,
-    WarehouseStaff,
+    PackagingStaff,
+    MaterialStaff,
     SalesRepresentative
 }
 

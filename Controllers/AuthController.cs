@@ -29,18 +29,14 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpPost("register")]
-        [AllowAnonymous]
+        [Authorize(Roles ="FactoryManager")]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest registerRequest)
         {
-            if (registerRequest.Role.ToString() == "FactoryManager")
-            {
-                return BadRequest("Cannot register users with FactoryManager role through this endpoint");
-            }
 
             var newUser = new User
             {
                 Username = registerRequest.Username,
-                PasswordHash = registerRequest.Password, // Password will be hashed in AuthService
+                PasswordHash = registerRequest.Password, 
                 Email = registerRequest.Email,
                 Role = registerRequest.Role
             };
@@ -52,29 +48,6 @@ namespace ChocolateFactory.Controllers
             return Ok("User registered successfully");
         }
 
-        [HttpPost("registerAdmin")]
-        [Authorize(Roles = "FactoryManager")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] UserRegisterRequest registerRequest)
-        {
-            if (registerRequest.Role.ToString() != "Admin")
-            {
-                return BadRequest("This endpoint is only for registering Admin users");
-            }
-
-            var newUser = new User
-            {
-                Username = registerRequest.Username,
-                PasswordHash = registerRequest.Password, // Password will be hashed in AuthService
-                Email = registerRequest.Email,
-                Role = registerRequest.Role
-            };
-
-            var success = await _authService.RegisterUserAsync(newUser);
-
-            if (!success) return BadRequest("Failed to register Admin user");
-
-            return Ok("Admin user registered successfully");
-        }
     }
 
 

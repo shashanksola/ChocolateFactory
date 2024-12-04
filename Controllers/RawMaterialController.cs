@@ -7,7 +7,7 @@ namespace ChocolateFactory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "FactoryManager,WarehouseStaff")]
+    [Authorize(Roles = "FactoryManager,MaterialStaff")]
     public class RawMaterialController : ControllerBase
     {
         private readonly RawMaterialService _service;
