@@ -7,7 +7,6 @@ namespace ChocolateFactory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "FactoryManager,MaintenanceStaff")]
     public class MaintenanceController : ControllerBase
     {
         private readonly MaintenanceService _service;
@@ -18,6 +17,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles ="Technician")]
         public async Task<IActionResult> GetAllMaintenanceRecords()
         {
             var records = await _service.GetAllMaintenanceRecordsAsync();
@@ -25,6 +25,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="Technician")]
         public async Task<IActionResult> AddMaintenanceRecordAsync([FromBody] MaintenanceRecord record)
         {
             await _service.AddMaintenanceRecordAsync(record);
