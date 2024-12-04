@@ -36,6 +36,8 @@ namespace ChocolateFactory.Controllers
             var newUser = new User
             {
                 Username = registerRequest.Username,
+                FirstName = registerRequest.FirstName,
+                LastName = registerRequest.LastName,
                 PasswordHash = registerRequest.Password, 
                 Email = registerRequest.Email,
                 Role = registerRequest.Role
@@ -43,7 +45,7 @@ namespace ChocolateFactory.Controllers
 
             var success = await _authService.RegisterUserAsync(newUser);
 
-            if (!success) return BadRequest("Failed to register user");
+            if (!success) return BadRequest("User with username already exists");
 
             return Ok("User registered successfully");
         }
@@ -53,11 +55,26 @@ namespace ChocolateFactory.Controllers
 
     public class UserRegisterRequest
     {
+        [Required]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 100 characters.")]
         public required string Username { get; set; }
+        [Required]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Last name must be between 1 and 100 characters.")]
+        public required string FirstName { get; set; }
+        [Required]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Last name must be between 1 and 100 characters.")]
+        public required string LastName { get; set; }
+
+        [Required]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
         public required string Password { get; set; }
-        [EmailAddress]
-        public required string Email {  get; set; }
+
+        [Required]
         public required UserRole Role { get; set; }
+
+        [Required]
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        public required string Email { get; set; }
     }
     public class UserLoginRequest
     {

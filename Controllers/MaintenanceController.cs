@@ -30,5 +30,34 @@ namespace ChocolateFactory.Controllers
             await _service.AddMaintenanceRecordAsync(record);
             return Ok(record);
         }
+
+        [HttpPut]
+        [Authorize(Roles ="FactoryManager")]
+        public async Task<IActionResult> UpdateMaintenenceRecordAsync([FromBody] MaintenanceRecord record)
+        {
+            var rec = _service.GetMaintenanceRecordByIdAsync(record.RecordId);
+
+            if (rec == null) {
+                return BadRequest("No Record Exists");
+            }
+
+            await _service.UpdateMaintenenceRecordAsync(record);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "FactoryManager")]
+        public async Task<IActionResult> DeleteMaintenenceRecordAsync(Guid id)
+        {
+            var rec = _service.GetMaintenanceRecordByIdAsync(id);
+
+            if (rec == null)
+            {
+                return BadRequest("No Record Exists");
+            }
+
+            await _service.DeleteMaintaneneceTask(id);
+            return NoContent();
+        }
     }
 }

@@ -13,6 +13,12 @@ namespace ChocolateFactory.Models
         [Required]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 100 characters.")]
         public required string Username { get; set; }
+        [Required]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Last name must be between 1 and 100 characters.")]
+        public required string FirstName { get; set; }
+        [Required]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Last name must be between 1 and 100 characters.")]
+        public required string LastName { get; set; }
 
         [Required]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]

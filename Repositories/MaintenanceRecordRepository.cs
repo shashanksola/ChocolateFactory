@@ -6,11 +6,11 @@ namespace ChocolateFactory.Repositories
 {
     public interface IMaintenanceRecordRepository
     {
-        Task<MaintenanceRecord> GetMaintenanceRecordByIdAsync(int recordId);
+        Task<MaintenanceRecord> GetMaintenanceRecordByIdAsync(Guid recordId);
         Task<IEnumerable<MaintenanceRecord>> GetAllMaintenanceRecordsAsync();
         Task AddMaintenanceRecordAsync(MaintenanceRecord record);
         Task UpdateMaintenanceRecordAsync(MaintenanceRecord record);
-        Task DeleteMaintenanceRecordAsync(int recordId);
+        Task DeleteMaintenanceRecordAsync(Guid recordId);
     }
 
     public class MaintenanceRecordRepository : IMaintenanceRecordRepository
@@ -22,7 +22,7 @@ namespace ChocolateFactory.Repositories
             _context = context;
         }
 
-        public async Task<MaintenanceRecord> GetMaintenanceRecordByIdAsync(int recordId) =>
+        public async Task<MaintenanceRecord> GetMaintenanceRecordByIdAsync(Guid recordId) =>
             await _context.MaintenanceRecords.FindAsync(recordId);
 
         public async Task<IEnumerable<MaintenanceRecord>> GetAllMaintenanceRecordsAsync() =>
@@ -40,7 +40,7 @@ namespace ChocolateFactory.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteMaintenanceRecordAsync(int recordId)
+        public async Task DeleteMaintenanceRecordAsync(Guid recordId)
         {
             var record = await GetMaintenanceRecordByIdAsync(recordId);
             if (record != null)

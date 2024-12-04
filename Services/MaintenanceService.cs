@@ -21,5 +21,20 @@ namespace ChocolateFactory.Services
         {
             await _repository.AddMaintenanceRecordAsync(record);
         }
+
+        public async Task UpdateMaintenenceRecordAsync(MaintenanceRecord record)
+        {
+            await _repository.UpdateMaintenanceRecordAsync(record);
+        }
+
+        public async Task DeleteMaintaneneceTask(Guid id)
+        {
+            await _repository.DeleteMaintenanceRecordAsync(id);
+        }
+
+        public async Task<MaintenanceRecord> GetMaintenanceRecordByIdAsync(Guid id)
+        {
+            return await _repository.GetMaintenanceRecordByIdAsync(id);
+        }
     }
 }
