@@ -9,7 +9,7 @@ namespace ChocolateFactory.Models
         public Guid ScheduleId { get; set; }
 
         [Required]
-        public required Guid ProductId { get; set; }
+        public required Guid ProductId { get; set; } //recipe ID
 
         [Required]
         public required DateTime StartDate { get; set; }

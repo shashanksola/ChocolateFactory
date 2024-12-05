@@ -87,6 +87,7 @@ builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<SalesService>();
 builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<QualityControlService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<AuthService>();

@@ -9,6 +9,7 @@ public interface IUserRepository
     Task AddUserAsync(User user);
     Task UpdateUserAsync(User user);
     Task DeleteUserAsync(int userId);
+    Task<IEnumerable<User>> GetUserByUserRoleAsync(UserRole role);
 }
 
 public class UserRepository : IUserRepository
@@ -45,5 +46,10 @@ public class UserRepository : IUserRepository
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<IEnumerable<User>> GetUserByUserRoleAsync(UserRole role)
+    {
+        return await _context.Users.Where(u => u.Role == role).ToListAsync();
     }
 }
