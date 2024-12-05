@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ChocolateFactory.Data;
-using ChocolateFactory.Helpers;
-using Scrutor;
-using ChocolateFactory.Services;
 using ChocolateFactory.Repositories;
+using ChocolateFactory.Services;
+using ChocolateFactory.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +19,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    // Add Swagger configuration for JWT
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -69,40 +66,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Register all services in the ChocolateFactory.Services namespace
+// Register repositories
 builder.Services.AddScoped<MaintenanceRecordRepository>();
-builder.Services.AddScoped<MaintenanceService>();
 builder.Services.AddScoped<FinishedGoodsRepository>();
-builder.Services.AddScoped<PackagingService>();
 builder.Services.AddScoped<ProductionScheduleRepository>();
-builder.Services.AddScoped<ProductionService>();
 builder.Services.AddScoped<RawMaterialRepository>();
-builder.Services.AddScoped<RawMaterialService>();
 builder.Services.AddScoped<RecipeRepository>();
-builder.Services.AddScoped<RecipeService>();
 builder.Services.AddScoped<ReportRepository>();
-builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<SalesOrderRepository>();
-builder.Services.AddScoped<SalesService>();
 builder.Services.AddScoped<WarehouseRepository>();
-builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<QualityCheckRepository>();
+
+// Register services
+builder.Services.AddScoped<MaintenanceService>();
+builder.Services.AddScoped<PackagingService>();
+builder.Services.AddScoped<ProductionService>();
+builder.Services.AddScoped<RawMaterialService>();
+builder.Services.AddScoped<RecipeService>();
+builder.Services.AddScoped<ReportService>();
+builder.Services.AddScoped<SalesService>();
+builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<QualityControlService>();
 
-// Register helper classes
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<JwtHelper>();
-
-// Register NotificationService manually due to custom initialization logic
-builder.Services.AddScoped<NotificationService>(provider =>
-{
-    var smtpServer = builder.Configuration["NotificationSettings:SmtpServer"];
-    var smtpPort = int.Parse(builder.Configuration["NotificationSettings:SmtpPort"]);
-    var emailFrom = builder.Configuration["NotificationSettings:EmailFrom"];
-    var emailPassword = builder.Configuration["NotificationSettings:EmailPassword"];
-
-    return new NotificationService(smtpServer, smtpPort, emailFrom, emailPassword);
-});
 
 var app = builder.Build();
 
@@ -129,7 +117,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(options => 
+app.UseCors(options =>
     options.WithOrigins("http://localhost:4200")
     .AllowAnyMethod().AllowAnyHeader());
 

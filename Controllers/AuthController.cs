@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using ChocolateFactory.Services;
 using ChocolateFactory.Models;
 using System.ComponentModel.DataAnnotations;
+using ChocolateFactory.Requests;
 
 namespace ChocolateFactory.Controllers
 {
@@ -29,7 +30,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpPost("register")]
-        [Authorize(Roles ="FactoryManager")]
+        //[Authorize(Roles ="FactoryManager")]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest registerRequest)
         {
 
@@ -76,10 +77,4 @@ namespace ChocolateFactory.Controllers
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public required string Email { get; set; }
     }
-    public class UserLoginRequest
-    {
-        public required string Username { get; set; }
-        public required string Password { get; set; }
-    }
-
 }

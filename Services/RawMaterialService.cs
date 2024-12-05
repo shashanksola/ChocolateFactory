@@ -5,9 +5,9 @@ namespace ChocolateFactory.Services
 {
     public class RawMaterialService
     {
-        private readonly IRawMaterialRepository _repository;
+        private readonly RawMaterialRepository _repository;
 
-        public RawMaterialService(IRawMaterialRepository repository)
+        public RawMaterialService(RawMaterialRepository repository)
         {
             _repository = repository;
         }

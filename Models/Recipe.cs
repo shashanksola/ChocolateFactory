@@ -7,10 +7,8 @@ namespace ChocolateFactory.Models
     public class Recipe
     {
         [Key]
-        public Guid RecipeId { get; set; }
-
         [Required]
-        public required Guid ProductId { get; set; }
+        public required string Name { get; set; }
 
         [Required]
         [StringLength(500, ErrorMessage = "Ingredients list cannot exceed 500 characters.")]
