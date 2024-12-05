@@ -9,7 +9,7 @@ namespace ChocolateFactory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "FactoryManager")]
+    [Authorize]
     public class WarehouseController : ControllerBase
     {
         private readonly WarehouseService _service;
@@ -27,6 +27,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="FactoryManager")]
         public async Task<IActionResult> AddWarehouseAsync([FromBody] WarehouseRequest warehouse)
         {
 
@@ -52,6 +53,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "FactoryManager")]
         public async Task<IActionResult> UpdateWarehouseAsync(Warehouse warehouse)
         {
             bool exists = await _service.WarehouseWithNameExistsAsync(warehouse.Name);
@@ -66,6 +68,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "FactoryManager")]
         public async Task<IActionResult> DeleteWarehouseAsync(Warehouse warehouse)
         {
             bool exists = await _service.WarehouseWithNameExistsAsync(warehouse.Name);
