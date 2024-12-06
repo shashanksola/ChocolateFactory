@@ -1,5 +1,6 @@
 ﻿using ChocolateFactory.Models;
 using ChocolateFactory.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
@@ -9,6 +10,7 @@ namespace ChocolateFactory.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles ="FactoryManager")]
     public class UserController : ControllerBase
     {
 
@@ -19,11 +21,25 @@ namespace ChocolateFactory.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<User>> GetUsersByRoleAsync([FromBody] UserRole role)
+        [HttpGet("{role}")]
+        public async Task<IEnumerable<User>> GetUsersByRoleAsync(UserRole role)
         {
-             var users = await _service.GetUsersByUserRoleAsync(role);
+            var users = await _service.GetUsersByUserRoleAsync(role);
             return users;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<User>> GetUsersAsync(UserRole role)
+        {
+            var users = await _service.GetUsersAsync();
+            return users;
+        }
+
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> DeleteUserAsync(string username)
+        {
+            await _service.DeleteUserAsync(username);
+            return Ok();
         }
     }
 }

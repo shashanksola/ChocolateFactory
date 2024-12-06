@@ -44,7 +44,6 @@ namespace ChocolateFactory.Controllers
                 Location = warehouse.Location,
                 Name = warehouse.Name,
                 Capacity = warehouse.Capacity,
-                ManagerId = warehouse.ManagerId,
                 CurrentStockLevel = warehouse.CurrentStockLevel
             };
 
@@ -56,30 +55,30 @@ namespace ChocolateFactory.Controllers
         [Authorize(Roles = "FactoryManager")]
         public async Task<IActionResult> UpdateWarehouseAsync(Warehouse warehouse)
         {
-            bool exists = await _service.WarehouseWithNameExistsAsync(warehouse.Name);
+            var exists = await _service.GetWarehouseByNameAsync(warehouse.Name);
 
-            if (exists == true)
+            if (exists == null)
             {
                 return BadRequest("Warehouse with Name: " + warehouse.Name + " doesn't exist");
             }
 
             await _service.UpdateWarehouseAsync(warehouse);
-            return Ok("Warehouse Updated Successfully");
+            return Ok(new { message = "Warehouse Updated Successfully" });
         }
 
-        [HttpDelete]
+        [HttpDelete("{name}")]
         [Authorize(Roles = "FactoryManager")]
-        public async Task<IActionResult> DeleteWarehouseAsync(Warehouse warehouse)
+        public async Task<IActionResult> DeleteWarehouseAsync(string name)
         {
-            bool exists = await _service.WarehouseWithNameExistsAsync(warehouse.Name);
+            var exists = await _service.GetWarehouseByNameAsync(name);
 
-            if (exists == true)
+            if (exists == null)
             {
-                return BadRequest("Warehouse with Name: " + warehouse.Name + " doesn't exist");
+                return BadRequest("Warehouse with Name: " + name + " doesn't exist");
             }
 
-            await _service.DeleteWarehouseAsync(warehouse);
-            return Ok("Warehouse Updated Successfully");
+            await _service.DeleteWarehouseAsync(name);
+            return Ok(new { message = "Warehouse Deleted Successfully" });
         }
     }
 }

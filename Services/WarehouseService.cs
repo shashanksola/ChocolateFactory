@@ -27,16 +27,14 @@ namespace ChocolateFactory.Services
             await _repository.AddWarehouseAsync(warehouse);
         }
 
-        public async Task DeleteWarehouseAsync(Warehouse warehouse)
+        public async Task DeleteWarehouseAsync(string warehouse)
         {
             await _repository.DeleteWarehouseAsync(warehouse);
         }
 
-        public async Task<Boolean> WarehouseWithNameExistsAsync(string name)
+        public async Task<Warehouse> GetWarehouseByNameAsync(string name)
         {
-            var exists = await _repository.GetWarehouseByNameAsync(name);
-            if (exists == null) return false;
-            return true;
+            return await _repository.GetWarehouseByNameAsync(name);
         }
 
         public async Task UpdateWarehouseAsync(Warehouse warehouse) {

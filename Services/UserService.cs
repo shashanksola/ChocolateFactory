@@ -18,5 +18,15 @@ namespace ChocolateFactory.Services
         public async Task<IEnumerable<User>> GetUsersByUserRoleAsync(UserRole role) {
             return await _userRepository.GetUserByUserRoleAsync(role);
         }
+
+        public async Task<IEnumerable<User>> GetUsersAsync()
+        {
+            return await _userRepository.GetUsersAsync();
+        }
+
+        public async Task DeleteUserAsync(string username)
+        {
+            await _userRepository.DeleteUserAsync(username);
+        }
     }
 }

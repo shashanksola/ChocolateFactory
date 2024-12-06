@@ -32,18 +32,18 @@ namespace ChocolateFactory.Controllers
             return Ok(recipe);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRecipeAsync(Guid id, [FromBody] RecipeRequest updatedRecipe)
+        [HttpPut("{name}")]
+        public async Task<IActionResult> UpdateRecipeAsync(string name, [FromBody] RecipeRequest updatedRecipe)
         {   
             
-            await _service.UpdateRecipeAsync(id, _service.getRecipeFromRecipeRequest(updatedRecipe));
+            await _service.UpdateRecipeAsync(name, _service.getRecipeFromRecipeRequest(updatedRecipe));
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRecipeAsync(Guid id)
+        [HttpDelete("{name}")]
+        public async Task<IActionResult> DeleteRecipeAsync(string name)
         {
-            await _service.DeleteRecipeAsync(id);
+            await _service.DeleteRecipeAsync(name);
             return NoContent();
         }
     }

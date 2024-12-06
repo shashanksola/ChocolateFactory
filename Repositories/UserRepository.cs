@@ -8,7 +8,7 @@ public interface IUserRepository
     Task<User> GetUserByUsernameAsync(string username);
     Task AddUserAsync(User user);
     Task UpdateUserAsync(User user);
-    Task DeleteUserAsync(int userId);
+    Task DeleteUserAsync(string username);
     Task<IEnumerable<User>> GetUserByUserRoleAsync(UserRole role);
 }
 
@@ -23,8 +23,10 @@ public class UserRepository : IUserRepository
 
     public async Task<User> GetUserByIdAsync(int userId) => await _context.Users.FindAsync(userId);
 
-    public async Task<User> GetUserByUsernameAsync(string username) =>
-        await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    public async Task<User> GetUserByUsernameAsync(string username)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    }
 
     public async Task AddUserAsync(User user)
     {
@@ -38,9 +40,9 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteUserAsync(int userId)
+    public async Task DeleteUserAsync(string username)
     {
-        var user = await GetUserByIdAsync(userId);
+        var user = await GetUserByUsernameAsync(username);
         if (user != null)
         {
             _context.Users.Remove(user);
@@ -51,5 +53,10 @@ public class UserRepository : IUserRepository
     public async Task<IEnumerable<User>> GetUserByUserRoleAsync(UserRole role)
     {
         return await _context.Users.Where(u => u.Role == role).ToListAsync();
+    }
+
+    public async Task<IEnumerable<User>> GetUsersAsync()
+    {
+        return await _context.Users.ToListAsync();
     }
 }

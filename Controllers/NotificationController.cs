@@ -20,7 +20,7 @@ namespace ChocolateFactory.Controllers
         public async Task<IActionResult> SendNotification([FromBody] NotificationRequest request)
         {
             await _notificationService.SendEmailAsync(request.ToEmail, request.Subject, request.Message);
-            return Ok("Notification sent successfully.");
+            return Ok(new { message = "Notification sent successfully." });
         }
     }
 

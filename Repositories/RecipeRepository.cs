@@ -7,11 +7,11 @@ namespace ChocolateFactory.Repositories
 
     public interface IRecipeRepository
     {
-        Task<Recipe> GetRecipeByIdAsync(Guid recipeId);
+        Task<Recipe> GetRecipeByIdAsync(string name);
         Task<IEnumerable<Recipe>> GetAllRecipesAsync();
         Task AddRecipeAsync(Recipe recipe);
-        Task UpdateRecipeAsync(Guid id, Recipe recipe);
-        Task DeleteRecipeAsync(Guid recipeId);
+        Task UpdateRecipeAsync(string name, Recipe recipe);
+        Task DeleteRecipeAsync(string name);
     }
 
 
@@ -24,8 +24,8 @@ namespace ChocolateFactory.Repositories
             _context = context;
         }
 
-        public async Task<Recipe> GetRecipeByIdAsync(Guid recipeId) =>
-            await _context.Recipes.FindAsync(recipeId);
+        public async Task<Recipe> GetRecipeByIdAsync(string name) =>
+            await _context.Recipes.FindAsync(name);
 
         public async Task<IEnumerable<Recipe>> GetAllRecipesAsync() =>
             await _context.Recipes.ToListAsync();
@@ -36,9 +36,9 @@ namespace ChocolateFactory.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateRecipeAsync(Guid id, Recipe recipe)
+        public async Task UpdateRecipeAsync(string name, Recipe recipe)
         {
-            var recipes = await GetRecipeByIdAsync(id);
+            var recipes = await GetRecipeByIdAsync(name);
 
             if (recipes == null) {
                 _context.Recipes.Update(recipe);
@@ -46,9 +46,9 @@ namespace ChocolateFactory.Repositories
             }
         }
 
-        public async Task DeleteRecipeAsync(Guid recipeId)
+        public async Task DeleteRecipeAsync(string name)
         {
-            var recipe = await GetRecipeByIdAsync(recipeId);
+            var recipe = await GetRecipeByIdAsync(name);
             if (recipe != null)
             {
                 _context.Recipes.Remove(recipe);

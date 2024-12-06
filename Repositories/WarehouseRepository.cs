@@ -11,7 +11,7 @@ namespace ChocolateFactory.Repositories
         Task<List<Warehouse>> GetAllWarehousesAsync();
         Task AddWarehouseAsync(Warehouse warehouse);
         Task UpdateWarehouseAsync(Warehouse warehouse);
-        Task DeleteWarehouseAsync(Warehouse warehouse);
+        Task DeleteWarehouseAsync(string warehouse);
     }
 
     public class WarehouseRepository : IWarehouseRepository
@@ -23,8 +23,10 @@ namespace ChocolateFactory.Repositories
             _context = context;
         }
 
-        public async Task<Warehouse> GetWarehouseByNameAsync(string name) =>
-            await _context.Warehouses.FindAsync(name);
+        public async Task<Warehouse> GetWarehouseByNameAsync(string name)
+        {
+            return await _context.Warehouses.FindAsync(name);
+        }
 
         public async Task<List<Warehouse>> GetAllWarehousesAsync() =>
             await _context.Warehouses.ToListAsync();
@@ -41,12 +43,12 @@ namespace ChocolateFactory.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteWarehouseAsync(Warehouse warehouse)
+        public async Task DeleteWarehouseAsync(string warehouse)
         {
-            var temp = await GetWarehouseByNameAsync(warehouse.Name);
+            var temp = await GetWarehouseByNameAsync(warehouse);
             if (temp != null)
             {
-                _context.Warehouses.Remove(warehouse);
+                _context.Warehouses.Remove(temp);
                 await _context.SaveChangesAsync();
             }
         }

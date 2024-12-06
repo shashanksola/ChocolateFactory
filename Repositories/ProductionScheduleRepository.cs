@@ -6,11 +6,11 @@ namespace ChocolateFactory.Repositories
 {
     public interface IProductionScheduleRepository
     {
-        Task<ProductionSchedule> GetScheduleByIdAsync(int scheduleId);
+        Task<ProductionSchedule> GetScheduleByIdAsync(Guid scheduleId);
         Task<IEnumerable<ProductionSchedule>> GetAllSchedulesAsync();
         Task AddScheduleAsync(ProductionSchedule schedule);
         Task UpdateScheduleAsync(ProductionSchedule schedule);
-        Task DeleteScheduleAsync(int scheduleId);
+        Task DeleteScheduleAsync(Guid scheduleId);
     }
 
     public class ProductionScheduleRepository : IProductionScheduleRepository
@@ -22,7 +22,7 @@ namespace ChocolateFactory.Repositories
             _context = context;
         }
 
-        public async Task<ProductionSchedule> GetScheduleByIdAsync(int scheduleId) =>
+        public async Task<ProductionSchedule> GetScheduleByIdAsync(Guid scheduleId) =>
             await _context.ProductionSchedules.FindAsync(scheduleId);
 
         public async Task<IEnumerable<ProductionSchedule>> GetAllSchedulesAsync() =>
@@ -40,7 +40,7 @@ namespace ChocolateFactory.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteScheduleAsync(int scheduleId)
+        public async Task DeleteScheduleAsync(Guid scheduleId)
         {
             var schedule = await GetScheduleByIdAsync(scheduleId);
             if (schedule != null)

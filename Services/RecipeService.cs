@@ -26,6 +26,46 @@ namespace ChocolateFactory.Services
             return ing;
         }
 
+        public List<Ingredient> ParseIngredientsFromString(string input)
+        {
+            string[] ingredientParts = input.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            List<Ingredient> ingredients = new List<Ingredient>();
+
+            foreach (var part in ingredientParts)
+            {
+                string[] details = part.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                if (details.Length < 3)
+                {
+                    throw new ArgumentException("Invalid ingredient format. Each ingredient must have a name, quantity, and unit.");
+                }
+
+                string ingredientName = string.Join(" ", details.Take(details.Length - 2));
+                double quantity;
+                string unitString = details.Last();
+
+                if (!double.TryParse(details[details.Length - 2], out quantity))
+                {
+                    throw new ArgumentException($"Invalid quantity for ingredient: {part}");
+                }
+
+                if (!Enum.TryParse(unitString, true, out Unit unit))
+                {
+                    throw new ArgumentException($"Invalid unit for ingredient: {unitString}");
+                }
+
+                ingredients.Add(new Ingredient
+                {
+                    IngredientName = ingredientName,
+                    Quantity = quantity,
+                    Unit = unit
+                });
+            }
+
+            return ingredients;
+        }
+
+
         public Recipe getRecipeFromRecipeRequest(RecipeRequest request) {
             Recipe recipe = new()
             {
@@ -38,9 +78,19 @@ namespace ChocolateFactory.Services
             return recipe;
         }
 
-        public async Task<IEnumerable<Recipe>> GetAllRecipesAsync()
+        public async Task<IEnumerable<RecipeRequest>> GetAllRecipesAsync()
         {
-            return await _repository.GetAllRecipesAsync();
+            IEnumerable<Recipe> recipes = await _repository.GetAllRecipesAsync();
+
+            IEnumerable<RecipeRequest> recipeRequests = recipes.Select(recipe => new RecipeRequest
+            {
+                Name = recipe.Name,
+                Ingredients = ParseIngredientsFromString(recipe.Ingredients),
+                QuantityPerBatch=recipe.QuantityPerBatch,
+                Instructions = recipe.Instructions
+            });
+
+            return recipeRequests;
         }
 
         public async Task AddRecipeAsync(Recipe recipe)
@@ -48,14 +98,14 @@ namespace ChocolateFactory.Services
             await _repository.AddRecipeAsync(recipe);
         }
 
-        public async Task UpdateRecipeAsync(Guid id, Recipe updatedRecipe)
+        public async Task UpdateRecipeAsync(string name, Recipe updatedRecipe)
         {
-            await _repository.UpdateRecipeAsync(id, updatedRecipe);
+            await _repository.UpdateRecipeAsync(name, updatedRecipe);
         }
 
-        public async Task DeleteRecipeAsync(Guid id)
+        public async Task DeleteRecipeAsync(string name)
         {
-            await _repository.DeleteRecipeAsync(id);
+            await _repository.DeleteRecipeAsync(name);
         }
     }
 }

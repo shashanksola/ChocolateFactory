@@ -14,7 +14,7 @@ namespace ChocolateFactory.Models
         public required Guid BatchId { get; set; }
 
         [Required]
-        public required Guid InspectorId { get; set; }
+        public required User QualityControllerName { get; set; }
 
         [Required]
         public required DateTime InspectionDate { get; set; }

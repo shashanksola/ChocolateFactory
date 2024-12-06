@@ -71,7 +71,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpPut("{name}")]
-        public async Task<IActionResult> UpdateMateriaByNamel(string name, [FromBody] RawMaterial material)
+        public async Task<IActionResult> UpdateMateriaByName(string name, [FromBody] RawMaterial material)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

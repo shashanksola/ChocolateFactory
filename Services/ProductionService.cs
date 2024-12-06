@@ -21,5 +21,15 @@ namespace ChocolateFactory.Services
         {
             await _repository.AddScheduleAsync(schedule);
         }
+
+        public async Task<ProductionSchedule> GetScheduleByIDAsync(Guid id)
+        {
+            return await _repository.GetScheduleByIdAsync(id);
+        }
+
+        public async Task UpdateScheduleAsync(ProductionSchedule schedule)
+        {
+            await _repository.UpdateScheduleAsync(schedule);
+        }
     }
 }

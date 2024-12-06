@@ -48,7 +48,7 @@ namespace ChocolateFactory.Controllers
 
             if (!success) return BadRequest("User with username already exists");
 
-            return Ok("User registered successfully");
+            return Ok();
         }
 
     }

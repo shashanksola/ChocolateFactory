@@ -24,10 +24,40 @@ namespace ChocolateFactory.Controllers
             return Ok(schedules);
         }
 
+        [HttpGet("/InProgress")]
+        public async Task<IActionResult> GetAllActiveSchedules()
+        {
+            var schedules = await _service.GetAllSchedulesAsync();
+            schedules = schedules.Where(x => x.Status == ProductionStatus.InProgress);
+            return Ok(schedules);
+        }
+
+        [HttpGet("/Completed")]
+        [Authorize(Roles ="QualityController")]
+        public async Task<IActionResult> GetAllCompletedSchedules()
+        {
+            var schedules = await _service.GetAllSchedulesAsync();
+            schedules = schedules.Where(x => x.Status == ProductionStatus.Completed);
+            return Ok(schedules);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> AddSchedule([FromBody] ProductionSchedule schedule)
         {
             await _service.AddScheduleAsync(schedule);
+            return Ok(schedule);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> CompleteProductionByScheduleID(Guid id)
+        {
+            var schedule = await _service.GetScheduleByIDAsync(id);
+
+            schedule.Status = ProductionStatus.Completed;
+
+            await _service.UpdateScheduleAsync(schedule);
+
             return Ok(schedule);
         }
     }
